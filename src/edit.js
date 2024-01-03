@@ -1,8 +1,14 @@
 import { __ } from '@wordpress/i18n';
+import React, { useEffect } from 'react';
+import AceEditor from 'react-ace';
+
+
+import "ace-builds/src-min-noconflict/mode-markdown";
+
+
 import { InspectorControls,useBlockProps, BlockControls, BlockAlignmentToolbar  } from '@wordpress/block-editor';
 import { useState } from '@wordpress/element';
 import { PanelBody,  TextareaControl, ToolbarGroup, ToolbarButton, TabPanel } from '@wordpress/components';
-import { useEffect } from 'react';
 import { RangeControl } from '@wordpress/components';
 import { createGzipBase64Data } from './createGzipBase64Data';
 
@@ -12,7 +18,7 @@ import { createGzipBase64Data } from './createGzipBase64Data';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes, isSelected } ) {
+export default function Edit( { attributes, setAttributes, isSelected, clientId } ) {
     const blockProps = useBlockProps();
     const [activeTab, setActiveTab] = useState('editor');
 
@@ -45,14 +51,15 @@ link:     https://rpi-virtuell.de/liascript-inline.css
         if (!content) {
             setAttributes({ content: '# Folie 1' });
             setAttributes({ iframeSrc: createGzipBase64Data(header+content) });
-
         }
     }, [postAuthor, content, setAttributes]);
 
+
     // Update the content on change
     const onChangeContent = ( newContent ) => {
-        setAttributes({ content: newContent });
+		setAttributes({ content: newContent });
         setAttributes({ iframeSrc: createGzipBase64Data(header+content) });
+        setAttributes({ headermd: header });
     };
     const onChangeIframeHeight = (newHeight) => {
         setAttributes({ iframeHeight: newHeight });
@@ -60,6 +67,9 @@ link:     https://rpi-virtuell.de/liascript-inline.css
     const onChangeAlignment = (newAlign) => {
         setAttributes({ align: newAlign });
     };
+
+    // Erstellen Sie eine einzigartige ID für den Ace-Editor
+    const editorId = `ace-editor-${clientId}`;
 
     return (
         <div { ...blockProps }>
@@ -98,11 +108,21 @@ link:     https://rpi-virtuell.de/liascript-inline.css
             </InspectorControls>
              {/* Hier Ihre Tabs und Iframe */}
             {activeTab === 'editor' && (
-                <TextareaControl
-                    //label={__("Schreibe etwas in LiaScript", 'liascript-markdown-block')}
-                    value={attributes.content || ''}
+                <AceEditor
+                    mode="markdown"
                     onChange={onChangeContent}
-                    rows={ Math.round(iframeHeight / 15) }
+                    name={editorId}
+                    value={content}
+                    width="100%"
+                    editorProps={{ $blockScrolling: true }}
+                    setOptions={{
+                        enableBasicAutocompletion: true,
+                        enableLiveAutocompletion: true,
+                        enableSnippets: true,
+                        showLineNumbers: true,
+                        useWorker: false,
+                        tabSize: 4
+                    }}
 
                 />
             )}

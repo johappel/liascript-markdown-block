@@ -30,6 +30,10 @@
 			"type": "number",
 			"default": 600
 		},
+		"mdheader": {
+			"type": "string",
+			"default":""
+		},
 		"iframeSrc": {
 			"type": "string",
 			"default": "#"
@@ -46,6 +50,7 @@
 				"editor":"https://liascript.github.io/LiveEditor/?/show/code/"
 			}
 		}
+
 	}
 
 }
