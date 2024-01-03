@@ -51,14 +51,15 @@ link:     https://rpi-virtuell.de/liascript-inline.css
         if (!content) {
             setAttributes({ content: '# Folie 1' });
             setAttributes({ iframeSrc: createGzipBase64Data(header+content) });
-
         }
     }, [postAuthor, content, setAttributes]);
+
 
     // Update the content on change
     const onChangeContent = ( newContent ) => {
 		setAttributes({ content: newContent });
         setAttributes({ iframeSrc: createGzipBase64Data(header+content) });
+        setAttributes({ headermd: header });
     };
     const onChangeIframeHeight = (newHeight) => {
         setAttributes({ iframeHeight: newHeight });

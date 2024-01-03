@@ -21400,6 +21400,9 @@ link:     https://rpi-virtuell.de/liascript-inline.css
     setAttributes({
       iframeSrc: (0,_createGzipBase64Data__WEBPACK_IMPORTED_MODULE_7__.createGzipBase64Data)(header + content)
     });
+    setAttributes({
+      headermd: header
+    });
   };
   const onChangeIframeHeight = newHeight => {
     setAttributes({
@@ -21549,11 +21552,15 @@ function save({
   const {
     iframeHeight,
     iframeSrc,
-    lia
+    lia,
+    content,
+    mdheader
   } = attributes;
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("figure", {
     ...blockProps
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "liascript-markdown-block-content"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("details", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("summary", null, "Markdown"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("pre", null, mdheader + content))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-embed__wrapper"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {
     width: "100%",
@@ -35937,7 +35944,7 @@ var pako = {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/liascript-markdown-block","version":"0.1.0","title":"Liascript Markdown Block","category":"formatting","icon":"media-code","description":"Example block scaffolded with Create Block tool.","example":{},"supports":{"html":false,"align":["wide","full"]},"textdomain":"liascript-markdown-block","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"content":{"type":"string","default":""},"postAuthor":{"type":"string","default":"Post Author"},"iframeHeight":{"type":"number","default":600},"iframeSrc":{"type":"string","default":"#"},"align":{"type":"string","default":""},"lia":{"type":"object","default":{"search":"?data:text/plain;charset=utf-8;Content-Encoding=gzip;base64,","course":"https://liascript.github.io/course/","editor":"https://liascript.github.io/LiveEditor/?/show/code/"}}}}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/liascript-markdown-block","version":"0.1.0","title":"Liascript Markdown Block","category":"formatting","icon":"media-code","description":"Example block scaffolded with Create Block tool.","example":{},"supports":{"html":false,"align":["wide","full"]},"textdomain":"liascript-markdown-block","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"content":{"type":"string","default":""},"postAuthor":{"type":"string","default":"Post Author"},"iframeHeight":{"type":"number","default":600},"mdheader":{"type":"string","default":""},"iframeSrc":{"type":"string","default":"#"},"align":{"type":"string","default":""},"lia":{"type":"object","default":{"search":"?data:text/plain;charset=utf-8;Content-Encoding=gzip;base64,","course":"https://liascript.github.io/course/","editor":"https://liascript.github.io/LiveEditor/?/show/code/"}}}}');
 
 /***/ })
 
