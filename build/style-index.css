@@ -12,6 +12,7 @@
   color: #000;
   padding: 10px;
   border: 1px solid rgba(238, 238, 238, 0.9333333333);
+  position: relative;
 }
 
 .liascript-links {
@@ -42,6 +43,24 @@
 .liascript-markdown-block-content {
   font-size: small;
   color: #c0c0c0 !important;
+}
+
+.wp-block-create-block-liascript-markdown-block div {
+  height: unset !important;
+}
+
+.wp-block-create-block-liascript-markdown-block.selected {
+  background: #dddddd;
+  position: fixed;
+  top: 50px;
+  bottom: 50px;
+  left: 10%;
+  right: 10%;
+  margin: auto;
+  width: 80%;
+  height: 600px;
+  z-index: 1000;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
 }
 
 /*# sourceMappingURL=style-index.css.map*/

@@ -32,7 +32,8 @@ add_action( 'init', 'liascript_markdown_block_liascript_markdown_block_block_ini
 function enqueue_block_editor_assets() {
     // Pfad zum gebauten JavaScript-Datei
     $block_path = '/build/index.js';
-    $dir = get_template_directory_uri();
+
+    $dir = plugin_dir_url(__FILE__  );
 
     // Skript einreihen
     wp_enqueue_script(
@@ -46,10 +47,32 @@ function enqueue_block_editor_assets() {
     global $post;
     $post_author = get_the_author_meta('display_name', $post->post_author);
 
+
     // Daten an das Skript übergeben
     wp_localize_script('lia-script-markdown-block-editor', 'liaScriptBlockData', array(
         'postAuthor' => $post_author,
+        'pluginDir' => $dir,
     ));
+
 }
 add_action('enqueue_block_editor_assets', 'enqueue_block_editor_assets');
+
+function enqueue_lia_script_assets()
+{
+    // Pfad zum gebauten JavaScript-Datei
+    $path = '/liascript/preview-lia.js';
+
+    $dir = plugin_dir_url(__FILE__);
+
+    // Skript einreihen
+    wp_enqueue_script(
+        'enqueue_lia_script_assets',
+        $dir . $path,
+        [],
+        filemtime($dir . $path),
+        true
+    );
+
+}
+add_action('wp_enqueue_scripts', 'enqueue_lia_script_assets');
 

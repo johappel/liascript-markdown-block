@@ -14,7 +14,8 @@ export default function save({ attributes }) {
                     </details>
                 </div>
 				<div className="wp-block-embed__wrapper">
-					<iframe
+					<iframe scrolling="no"
+						className="course-view"
 						width="100%"
 						height={`${iframeHeight}px`}
 						src={`${lia.course+lia.search+iframeSrc}`}></iframe>

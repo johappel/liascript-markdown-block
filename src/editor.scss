@@ -7,3 +7,9 @@
 .wp-block-create-block-liascript-markdown-block {
 	border: 1px dotted #f00;
 }
+body.no-scroll {
+	overflow: hidden;
+}
+iframe {
+	overflow: hidden;
+}

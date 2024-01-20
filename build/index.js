@@ -21350,7 +21350,7 @@ function Edit({
   clientId
 }) {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useBlockProps)();
-  const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('editor');
+  const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('preview');
   const {
     content,
     postAuthor,
@@ -21360,8 +21360,10 @@ function Edit({
     lia
   } = attributes;
   let [header, setHeader] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('');
+  const iframeRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const postAuthor = typeof liaScriptBlockData !== 'undefined' && liaScriptBlockData.postAuthor ? liaScriptBlockData.postAuthor : 'Post Author';
+
     // Setze den Autor, wenn er noch nicht gesetzt ist
     if (!postAuthor || postAuthor === 'Post Author') {
       setAttributes({
@@ -21390,7 +21392,53 @@ link:     https://rpi-virtuell.de/liascript-inline.css
         iframeSrc: (0,_createGzipBase64Data__WEBPACK_IMPORTED_MODULE_7__.createGzipBase64Data)(header + content)
       });
     }
+    const course = typeof liaScriptBlockData !== 'undefined' && liaScriptBlockData.pluginDir ? liaScriptBlockData.pluginDir + 'liascript/' : '/liascript/';
+    if (course) {
+      setAttributes({
+        lia: {
+          course: course,
+          editor: lia.editor,
+          search: lia.search
+        }
+      });
+    }
   }, [postAuthor, content, setAttributes]);
+
+  /**
+   * Überwacht Änderungen am Content
+   */
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const checkIframeContent = () => {
+      const iframeDoc = iframeRef.current?.contentWindow?.document;
+      if (!iframeDoc) return;
+      const liaCanvas = iframeDoc.querySelector('.lia-canvas');
+      if (liaCanvas) {
+        liaCanvas.classList.remove("lia-navigation--visible");
+        liaCanvas.classList.add("lia-navigation--hidden");
+        const liaTocSearch = iframeDoc.querySelector('.lia-toc__search');
+        if (liaTocSearch) {
+          liaTocSearch.style.display = "none";
+        }
+        const liaBtnHome = iframeDoc.querySelector('#lia-btn-home');
+        if (liaBtnHome && liaBtnHome.parentElement) {
+          liaBtnHome.parentElement.style.display = "none";
+        }
+      } else {
+        // Warten und erneut überprüfen
+        setTimeout(checkIframeContent, 50);
+      }
+    };
+    if (activeTab === 'preview' && iframeRef.current) {
+      iframeRef.current.addEventListener('load', checkIframeContent);
+    }
+
+    // Bereinigung
+    return () => {
+      if (iframeRef.current) {
+        iframeRef.current.removeEventListener('load', checkIframeContent);
+      }
+    };
+  }, [activeTab]); // Reagiert auf Änderungen von iframeRef und Vorschau im Editor
 
   // Update the content on change
   const onChangeContent = newContent => {
@@ -21420,12 +21468,12 @@ link:     https://rpi-virtuell.de/liascript-inline.css
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, isSelected && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.ToolbarGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.ToolbarButton, {
-    isPressed: activeTab === 'editor',
-    onClick: () => setActiveTab('editor')
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("LiaScript", 'liascript-markdown-block')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.ToolbarButton, {
     isPressed: activeTab === 'preview',
     onClick: () => setActiveTab('preview')
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Vorschau", 'liascript-markdown-block')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockAlignmentToolbar, {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Vorschau", 'liascript-markdown-block')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.ToolbarButton, {
+    isPressed: activeTab === 'editor',
+    onClick: () => setActiveTab('editor')
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Bearbeiten", 'liascript-markdown-block')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.BlockAlignmentToolbar, {
     value: align,
     onChange: onChangeAlignment
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
@@ -21436,7 +21484,37 @@ link:     https://rpi-virtuell.de/liascript-inline.css
     onChange: onChangeIframeHeight,
     min: 100,
     max: 1200
-  }))), activeTab === 'editor' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_ace__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }))), activeTab === 'preview' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "liascript-links"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: `${lia.editor + iframeSrc}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-edit"
+  }), " Remix"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: `${lia.course + lia.search + iframeSrc}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-media-interactive"
+  }), " Present")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {
+    className: "course-view",
+    ref: iframeRef,
+    width: "100%",
+    height: `${iframeHeight}px`,
+    src: `${lia.course + lia.search + iframeSrc}`,
+    frameBorder: "0",
+    scrolling: "no",
+    sandbox: "allow-same-origin allow-scripts allow-popups allow-forms"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 10,
+      backgroundColor: 'transparent',
+      pointerEvents: 'none'
+    }
+  })), activeTab === 'editor' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_ace__WEBPACK_IMPORTED_MODULE_2__["default"], {
     mode: "markdown",
     onChange: onChangeContent,
     name: editorId,
@@ -21453,22 +21531,7 @@ link:     https://rpi-virtuell.de/liascript-inline.css
       useWorker: false,
       tabSize: 4
     }
-  }), activeTab === 'preview' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {
-    width: "100%",
-    height: `${iframeHeight}px`,
-    src: `${lia.course + lia.search + iframeSrc}`,
-    frameBorder: "0"
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "liascript-links"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: `${lia.editor + iframeSrc}`
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "dashicons dashicons-edit"
-  }), " Remix"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: `${lia.course + lia.search + iframeSrc}`
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "dashicons dashicons-media-interactive"
-  }), " Present"))));
+  }));
 }
 
 /***/ }),
@@ -21563,6 +21626,8 @@ function save({
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("details", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("summary", null, "Markdown"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("pre", null, mdheader + content))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-embed__wrapper"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {
+    scrolling: "no",
+    className: "course-view",
     width: "100%",
     height: `${iframeHeight}px`,
     src: `${lia.course + lia.search + iframeSrc}`
