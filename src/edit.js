@@ -1,9 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import React, { useEffect } from 'react';
-import AceEditor from 'react-ace';
-import "ace-builds/src-min-noconflict/mode-markdown";
-
-
+import webview from '@liascript/editor/dist/ace.js';
 import { InspectorControls,useBlockProps, BlockControls, BlockAlignmentToolbar  } from '@wordpress/block-editor';
 import { useState, useRef  } from '@wordpress/element';
 import { PanelBody,  TextareaControl, ToolbarGroup, ToolbarButton, TabPanel } from '@wordpress/components';
@@ -199,23 +196,7 @@ link:     https://rpi-virtuell.de/liascript-inline.css
                 </div>
             )}
             {activeTab === 'editor' && (
-                <AceEditor
-                    mode="markdown"
-                    onChange={onChangeContent}
-                    name={editorId}
-                    value={content}
-                    width="100%"
-                    editorProps={{$blockScrolling: true }}
-                    setOptions={{
-                        enableBasicAutocompletion: true,
-                        enableLiveAutocompletion: true,
-                        enableSnippets: true,
-                        showLineNumbers: true,
-                        useWorker: false,
-                        tabSize: 4
-                    }}
-
-                />
+                <webview src={`${lia.course + lia.search + iframeSrc}`}></webview>
             )}
 
         </div>
